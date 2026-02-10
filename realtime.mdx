@@ -1,0 +1,42 @@
+---
+title: "Realtime"
+description: "Listen for live data updates."
+---
+
+Keep your app in sync. CoreBase lets you listen for changes in your database and update your UI instantly.
+
+## Use the Query Hook (React)
+
+If you are using React or React Native, our `useQuery` hook makes realtime data easy.
+
+```typescript
+import { useQuery } from 'corebase-js/react';
+
+// 1. Define your query
+const query = {
+  from: 'posts',
+  select: ['id', 'title', 'likes'],
+  where: { 
+    status: 'published' 
+  }
+};
+
+const MyComponent = () => {
+  // 2. Use the hook
+  // The component re-renders automatically when data changes
+  const { data, loading, error } = useQuery(corebase, query);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  return (
+    <ul>
+      {data.map(post => (
+        <li key={post.id}>
+          {post.title} ({post.likes} likes)
+        </li>
+      ))}
+    </ul>
+  );
+};
+```

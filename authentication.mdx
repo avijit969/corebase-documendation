@@ -1,0 +1,61 @@
+---
+title: "User Accounts"
+description: "Manage users securely with simple commands."
+---
+
+CoreBase makes it easy to handle user accounts. You can sign users up, log them in, and manage their sessions without complex code.
+
+## Sign Up
+
+Create a new account for a user.
+
+```typescript
+const { data, error } = await corebase.auth.signUp({
+  email: 'user@example.com',
+  password: 'securePassword123',
+  name: 'John Doe'
+});
+
+if (error) {
+  console.error('Signup failed:', error);
+} else {
+  console.log('Welcome!', data.user);
+}
+```
+
+## Sign In
+
+Log in an existing user. We handle the session for you, so users stay logged in even if they refresh the page.
+
+```typescript
+const { data, error } = await corebase.auth.signIn({
+  email: 'user@example.com',
+  password: 'securePassword123'
+});
+
+if (error) {
+  console.error('Login failed:', error);
+} else {
+  console.log('Logged in successfully:', data.user);
+}
+```
+
+## Get Current User
+
+Check who is currently logged in.
+
+```typescript
+const { data, error } = await corebase.auth.getUser();
+
+if (data) {
+  console.log('Current user:', data.user);
+}
+```
+
+## Sign Out
+
+Log out the current user securely.
+
+```typescript
+await corebase.auth.signOut();
+```

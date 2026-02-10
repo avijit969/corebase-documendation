@@ -1,0 +1,124 @@
+---
+title: "Database"
+description: "Read, write, and manage your data."
+---
+
+Working with your database is simple. Use our chainable commands to find, add, update, and remove data.
+
+## Read Data (Select)
+
+### Get Everything
+Fetch all rows from a table.
+
+```typescript
+const { data, error, count } = await corebase
+  .from('posts')
+  .select('*');
+```
+
+### Get Specific Fields
+Fetch only the columns you need.
+
+```typescript
+const { data } = await corebase
+  .from('users')
+  .select('id, name, email');
+```
+
+### Filter Results
+Find specific data (like `WHERE` in SQL).
+
+```typescript
+const { data } = await corebase
+  .from('posts')
+  .select('*')
+  .eq('status', 'published')
+  .match({ author_id: 'user_123', category: 'tech' });
+```
+
+### Sort and Limit
+Order your results and pick how many to show.
+
+```typescript
+const { data, count } = await corebase
+  .from('posts')
+  .select('*')
+  .order('created_at', { ascending: false }) // Newest first
+  .limit(10)                                 // Only 10
+  .page(1);                                  // Page 1
+```
+
+### Get One Record
+Fetch a single specific row.
+
+```typescript
+const { data: user, error } = await corebase
+  .from('users')
+  .select('*')
+  .eq('id', 1)
+  .single();
+```
+
+## Add Data (Insert)
+
+Add new rows to your table.
+
+```typescript
+// Add one row
+const { data, error } = await corebase
+  .from('posts')
+  .insert({ 
+    title: 'My New Post', 
+    content: 'Hello World', 
+    user_id: 'user_123' 
+  });
+
+// Add multiple rows
+const { data, error } = await corebase
+  .from('posts')
+  .insert([
+    { title: 'Post 1', user_id: 'user_123' },
+    { title: 'Post 2', user_id: 'user_123' }
+  ]);
+```
+
+## Update Data
+
+Change existing data.
+
+```typescript
+const { data, error } = await corebase
+  .from('posts')
+  .update({ status: 'archived' }) // Change this
+  .eq('status', 'draft')          // For these rows
+  .match({ user_id: 'user_123' });
+```
+
+## Remove Data (Delete)
+
+Remove rows from your table.
+
+```typescript
+const { data, error } = await corebase
+  .from('posts')
+  .delete()
+  .eq('id', 123);
+```
+
+## TypeScript Support
+
+If you use TypeScript, you can define your data types to get autocomplete and error checking.
+
+```typescript
+// 1. Define your data shape
+interface Post {
+  id: number;
+  title: string;
+  content: string;
+}
+
+// 2. Pass it to the .from() method
+const { data } = await corebase.from<Post>('posts').select('*');
+
+// data is now typed as Post[] | null
+```
