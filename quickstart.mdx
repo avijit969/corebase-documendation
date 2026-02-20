@@ -3,36 +3,76 @@ title: "Quickstart"
 description: "Start building with CoreBase in minutes."
 ---
 
-Get your app connected to CoreBase in just a few steps.
+Get your app connected to CoreBase in just a few steps. You can either use our CLI to generate a fresh starter project or manually install the library into an existing project.
 
-## 1. Installation
+<Tabs>
+  <Tab title="Use the CLI (Recommended)">
+    <Steps>
+      <Step title="Initialize the project">
+        Run the CLI to create a new CoreBase application.
+        ```bash
+        npx create-corebase-app <app-name>
+        ```
+      </Step>
+      
+      <Step title="Select a template">
+        Choose your preferred framework when prompted:
+        ```bash
+        ? Select a template: (Use arrow keys)
+        ❯ React+corebase
+          Next.js+corebase
+        ```
+      </Step>
+      
+      <Step title="Enter your API key">
+        Provide your Public API Key from the [CoreBase dashboard](https://corebase.trivyaa.in).
+        ```bash
+        ? Enter your public api key: (Use arrow keys)
+        ❯ pk_...
+        ```
+      </Step>
+      
+      <Step title="Run the application">
+        Navigate to your new project and start the development server.
+        ```bash
+        cd <app-name>
+        npm run dev
+        ```
+        Now you can see your app dev server running at `localhost:3000` or `localhost:5173`.
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab title="Manual Installation">
+    <Steps>
+      <Step title="Install the client library">
+        Install the CoreBase client library in your existing project.
+        ```bash
+        npm install corebase-js
+        ```
+        
+        If you use React or React Native, you can optionally install the React types:
+        ```bash
+        npm install --save-dev @types/react
+        ```
+      </Step>
+      
+      <Step title="Initialize the client">
+        Connect to your project using your API Key and URL. You can find these details in your CoreBase dashboard.
+        
+        ```typescript
+        import { createClient } from 'corebase-js';
 
-Install the CoreBase client library.
+        const CLIENT_URL = 'https://corebase.trivyaa.in'; // Your API URL
+        const API_KEY = 'pk_...'; // Your Public API Key
 
-```bash
-npm install corebase-js
-```
+        const corebase = createClient(CLIENT_URL, API_KEY);
+        ```
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
 
-If you use React or React Native, you'll want the React hooks too:
-
-```bash
-npm install --save-dev react @types/react
-```
-
-## 2. Initialization
-
-Connect to your project using your API Key. You can find these details in your CoreBase dashboard.
-
-```typescript
-import { createClient } from 'corebase-js';
-
-const CLIENT_URL = 'https://corebase.trivyaa.in'; // Your API URL
-const API_KEY = 'pk_...'; // Your Public API Key
-
-const corebase = createClient(CLIENT_URL, API_KEY);
-```
-
-## 3. Next Steps
+## Next Steps
 
 Now that you're connected, check out what you can do:
 

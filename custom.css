@@ -1,0 +1,4 @@
+/* Hide "Powered by Mintlify" branding in footer */
+a[href*="mintlify.com"] {
+    display: none !important;
+}

@@ -3,9 +3,9 @@
   "theme": "mint",
   "name": "CoreBase",
   "colors": {
-    "primary": "#FF5722",
-    "light": "#FF8A65",
-    "dark": "#E64A19"
+    "primary": "#8B5CF6",
+    "light": "#A78BFA",
+    "dark": "#6D28D9"
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -30,17 +30,6 @@
             ]
           }
         ]
-      },
-      {
-        "tab": "API Reference",
-        "groups": [
-          {
-            "group": "Reference",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          }
-        ]
       }
     ],
     "global": {
@@ -55,7 +44,7 @@
     "links": [
       {
         "label": "Website",
-        "href": "https://trivyaa.in"
+        "href": "https://corebase.trivyaa.in"
       },
       {
         "label": "Support",
