@@ -7,22 +7,29 @@ CoreBase makes file uploads easy. You can upload files directly from the browser
 
 ## Upload a File
 
-Here is how to upload a file from a standard HTML file input.
+<Steps>
+  <Step title="Get the file from an input">
+    Use a standard HTML file input to select a file from the user's device.
+    ```typescript
+    // Example: <input type="file" id="fileInput" />
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    const file = fileInput.files?.[0];
+    ```
+  </Step>
+  <Step title="Upload the file">
+    Call the upload method with the selected file.
+    ```typescript
+    if (file) {
+      const { data, error } = await corebase.storage.upload(file);
 
-```typescript
-// Example: <input type="file" id="fileInput" />
-const fileInput = document.getElementById('fileInput') as HTMLInputElement;
-const file = fileInput.files?.[0];
-
-if (file) {
-  const { data, error } = await corebase.storage.upload(file);
-
-  if (error) {
-    console.error('Upload failed:', error);
-  } else {
-    console.log('Success! File uploaded.');
-    console.log('File Key:', data.key);
-    console.log('File URL:', data.url);
-  }
-}
-```
+      if (error) {
+        console.error('Upload failed:', error);
+      } else {
+        console.log('Success! File uploaded.');
+        console.log('File Key:', data.key);
+        console.log('File URL:', data.url);
+      }
+    }
+    ```
+  </Step>
+</Steps>

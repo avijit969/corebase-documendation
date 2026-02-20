@@ -5,6 +5,10 @@ description: "Manage users securely with simple commands."
 
 CoreBase makes it easy to handle user accounts. You can sign users up, log them in, and manage their sessions without complex code.
 
+<Note>
+  CoreBase handles sessions automatically, so users stay logged in even if they refresh the page.
+</Note>
+
 ## Sign Up
 
 Create a new account for a user.
@@ -25,7 +29,7 @@ if (error) {
 
 ## Sign In
 
-Log in an existing user. We handle the session for you, so users stay logged in even if they refresh the page.
+Log in an existing user. 
 
 ```typescript
 const { data, error } = await corebase.auth.signIn({

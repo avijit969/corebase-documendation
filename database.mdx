@@ -63,8 +63,8 @@ const { data: user, error } = await corebase
 
 Add new rows to your table.
 
-```typescript
-// Add one row
+<CodeGroup>
+```typescript Add one row
 const { data, error } = await corebase
   .from('posts')
   .insert({ 
@@ -72,8 +72,9 @@ const { data, error } = await corebase
     content: 'Hello World', 
     user_id: 'user_123' 
   });
+```
 
-// Add multiple rows
+```typescript Add multiple rows
 const { data, error } = await corebase
   .from('posts')
   .insert([
@@ -81,6 +82,7 @@ const { data, error } = await corebase
     { title: 'Post 2', user_id: 'user_123' }
   ]);
 ```
+</CodeGroup>
 
 ## Update Data
 
@@ -105,20 +107,20 @@ const { data, error } = await corebase
   .eq('id', 123);
 ```
 
-## TypeScript Support
+<Tip title="TypeScript Support">
+  If you use TypeScript, you can define your data types to get autocomplete and error checking.
 
-If you use TypeScript, you can define your data types to get autocomplete and error checking.
+  ```typescript
+  // 1. Define your data shape
+  interface Post {
+    id: number;
+    title: string;
+    content: string;
+  }
 
-```typescript
-// 1. Define your data shape
-interface Post {
-  id: number;
-  title: string;
-  content: string;
-}
+  // 2. Pass it to the .from() method
+  const { data } = await corebase.from<Post>('posts').select('*');
 
-// 2. Pass it to the .from() method
-const { data } = await corebase.from<Post>('posts').select('*');
-
-// data is now typed as Post[] | null
-```
+  // data is now typed as Post[] | null
+  ```
+</Tip>
