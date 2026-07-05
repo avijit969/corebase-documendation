@@ -14,11 +14,6 @@
 
 ## Terminology
 
-- Two distinct identities — don't conflate them:
-  - **developer** (or "platform user"): your own CoreBase account, via
-    `corebase.platformAuth`. Dashboard-equivalent.
-  - **end user**: an account within a specific project, via `corebase.auth`. This is
-    *your app's* user, not the developer building it.
 - "Function" (capitalized in prose, e.g. "a Function") always means an Edge Function
   (`corebase.functions`) — don't use it loosely for "cron job" or generic backend logic.
 

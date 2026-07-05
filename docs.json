@@ -24,7 +24,6 @@
             "group": "Core Concepts",
             "pages": [
               "authentication",
-              "platform-auth",
               "database",
               "storage",
               "realtime"
