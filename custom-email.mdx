@@ -1,0 +1,44 @@
+---
+title: "Custom Email"
+description: "Replace the default emails CoreBase sends to your end users."
+---
+
+By default, CoreBase sends a simple welcome email when someone signs up through
+[User Accounts](/authentication). Custom email templates let you replace it with your own.
+
+<Note>
+  If a template exists for your project, it's used automatically in place of the default
+  welcome email — you don't need to wire anything up beyond creating it.
+</Note>
+
+## Create a Template
+
+```typescript
+const { data, error } = await corebase.customEmail.create({
+  name: 'welcome',
+  subject: 'Welcome to {{projectName}}, {{name}}!',
+  body: '<p>Hi {{name}}, thanks for signing up.</p>',
+});
+```
+
+## List, Get, Update, Delete
+
+```typescript
+const { data: templates } = await corebase.customEmail.list();
+const { data } = await corebase.customEmail.get(template.id);
+
+await corebase.customEmail.update(template.id, { subject: 'Welcome aboard, {{name}}!' });
+await corebase.customEmail.delete(template.id);
+```
+
+## Send Manually
+
+Outside the automatic signup flow, you can send a template directly:
+
+```typescript
+await corebase.customEmail.send(template.id, {
+  to: 'user@example.com',
+  name: 'Ada',
+  projectName: 'My App',
+});
+```

@@ -5,22 +5,28 @@ description: "Listen for live data updates."
 
 Keep your app in sync. CoreBase lets you listen for changes in your database and update your UI instantly.
 
+<Note>
+  Rows are always scoped automatically to the signed-in user, on top of whatever you
+  filter for below.
+</Note>
+
 ## Use the Query Hook (React)
 
 If you are using React or React Native, our `useQuery` hook makes realtime data easy.
 
 <Steps>
   <Step title="Define your query">
-    Declare the structure of the data you want to retrieve and subscribe to.
+    Declare which table you want to subscribe to, and optionally filter, sort, and limit the results.
     ```typescript
     import { useQuery } from 'corebase-js/react';
 
     const query = {
       from: 'posts',
       select: ['id', 'title', 'likes'],
-      where: { 
-        status: 'published' 
-      }
+      where: { status: 'published', likes: { gt: 10 } },
+      orderBy: 'created_at',
+      order: 'DESC',
+      limit: 20,
     };
     ```
   </Step>
@@ -36,9 +42,7 @@ If you are using React or React Native, our `useQuery` hook makes realtime data 
       return (
         <ul>
           {data.map(post => (
-            <li key={post.id}>
-              {post.title} ({post.likes} likes)
-            </li>
+            <li key={post.id}>{post.title} ({post.likes} likes)</li>
           ))}
         </ul>
       );
@@ -46,3 +50,39 @@ If you are using React or React Native, our `useQuery` hook makes realtime data 
     ```
   </Step>
 </Steps>
+
+## Filtering, Sorting, and Joins
+
+**Filter operators** in `where`: `eq`, `gt`, `lt`, `in` — e.g. `{ status: { in: ['draft', 'review'] } }`.
+A bare value (`{ status: 'published' }`) is treated as equality.
+
+**Joins** attach related data under a nested key named after the joined table (up to 3
+levels deep). Each joined table needs its own explicit `select`:
+
+```typescript
+const query = {
+  from: 'products',
+  select: ['id', 'name', 'price', 'category_id'],
+  join: [
+    {
+      table: 'categories',
+      on: { 'products.category_id': 'categories.id' },
+      select: ['name'],
+    },
+  ],
+};
+// Each row: { id, name, price, category_id, categories: { name } }
+```
+
+## Use the Client Directly (Vanilla JS)
+
+Not using React? Subscribe with the realtime client directly — this works the same way in Vue, Svelte, or plain JavaScript.
+
+```typescript
+const subscriptionId = corebase.realtime.subscribe({ from: 'posts' }, (rows) => {
+  console.log('Posts updated:', rows);
+});
+
+// Later, when you no longer need updates:
+corebase.realtime.unsubscribe(subscriptionId);
+```

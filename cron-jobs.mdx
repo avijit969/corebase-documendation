@@ -1,0 +1,41 @@
+---
+title: "Cron Jobs"
+description: "Schedule outbound webhooks."
+---
+
+Cron jobs fire an outbound HTTP request to a URL you configure, on a schedule you define.
+
+<Note>
+  This is different from a [Function](/functions) with `trigger_type: 'cron'`, which runs
+  your own deployed code instead of calling out to a URL. Use a cron job when you just
+  need to hit an existing webhook; use a Function when the scheduled work needs to run
+  inside CoreBase.
+</Note>
+
+## Create a Job
+
+```typescript
+const { data, error } = await corebase.cron.create({
+  name: 'nightly-sync',
+  cron_expression: '0 0 * * *',
+  url: 'https://example.com/webhook',
+  method: 'POST',
+});
+```
+
+## List, Get, Update, Delete
+
+```typescript
+const { data: jobs } = await corebase.cron.list();
+const { data } = await corebase.cron.get(job.id);
+
+await corebase.cron.update(job.id, { cron_expression: '0 */6 * * *' });
+await corebase.cron.delete(job.id);
+```
+
+## View Execution History
+
+```typescript
+const { data: executions } = await corebase.cron.listExecutions(job.id);
+const { data: execution } = await corebase.cron.getExecution(job.id, executions[0].id);
+```

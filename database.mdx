@@ -124,3 +124,60 @@ const { data, error } = await corebase
   // data is now typed as Post[] | null
   ```
 </Tip>
+
+## Managing Tables (Schema)
+
+Everything above works on row data. To define the shape of your tables, use `corebase.db` instead.
+
+### Create a Table
+
+```typescript
+const { data, error } = await corebase.db.createTable({
+  table: 'posts',
+  columns: [
+    { name: 'id', type: 'text', primary: true },
+    { name: 'title', type: 'text', notNull: true },
+    {
+      name: 'author_id',
+      type: 'text',
+      references: { table: 'users', column: 'id', onDelete: 'cascade' },
+    },
+  ],
+  indexes: [{ columns: ['author_id'] }],
+});
+```
+
+<Note>
+  `rls` (row-level security expressions) can be attached to a table today, but the
+  gateway does not enforce them yet — treat it as reserved for a future release, not a
+  working access control mechanism.
+</Note>
+
+### List & Inspect Tables
+
+```typescript
+const { data: tables } = await corebase.db.listTables();
+const { data: schema } = await corebase.db.getTable('posts');
+```
+
+### Add, Rename, or Remove a Column
+
+```typescript
+await corebase.db.addColumn('posts', { name: 'published', type: 'boolean' });
+await corebase.db.renameColumn('posts', 'published', { name: 'is_published' });
+await corebase.db.deleteColumn('posts', 'is_published');
+```
+
+### Add a Foreign Key
+
+```typescript
+await corebase.db.addForeignKey('posts', {
+  column: 'author_id',
+  references: { table: 'users', column: 'id', onDelete: 'cascade' },
+});
+```
+
+<Tip>
+  Adding a foreign key rebuilds the table under the hood — batch schema changes
+  together when you can, rather than making them one at a time.
+</Tip>

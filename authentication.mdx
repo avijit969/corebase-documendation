@@ -63,3 +63,44 @@ Log out the current user securely.
 ```typescript
 await corebase.auth.signOut();
 ```
+
+## Sign In with a Provider (OAuth)
+
+CoreBase also supports Google and GitHub sign-in. Unlike the methods above, this is a
+redirect flow, not a promise you await directly — the gateway completes the exchange
+with the provider and sends the user back to your app.
+
+<Steps>
+  <Step title="Redirect to the provider">
+    Send the browser to the OAuth URL, passing your project's ID.
+    ```typescript
+    window.location.href = corebase.auth.getOAuthUrl('google', projectId);
+    // or 'github'
+    ```
+  </Step>
+  <Step title="Read the tokens on your success page">
+    CoreBase redirects back to your configured success URL with the session in the query string.
+    ```typescript
+    const params = new URLSearchParams(window.location.search);
+
+    corebase.auth.setSessionFromTokens({
+      access_token: params.get('access_token')!,
+      refresh_token: params.get('refresh_token') ?? undefined,
+      user: { id: params.get('user_id')!, email: '' },
+    });
+    ```
+  </Step>
+</Steps>
+
+<Note>
+  Configure your Google/GitHub client ID and secret for the project first, via
+  `corebase.auth.updateAuthConfig(projectId, { google_client_id, google_client_secret })`.
+</Note>
+
+## Refreshing a Session
+
+Sessions refresh automatically in most cases. If you need to do it manually:
+
+```typescript
+const { data, error } = await corebase.auth.refreshSession();
+```

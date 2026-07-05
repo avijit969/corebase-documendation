@@ -24,9 +24,18 @@
             "group": "Core Concepts",
             "pages": [
               "authentication",
+              "platform-auth",
               "database",
               "storage",
               "realtime"
+            ]
+          },
+          {
+            "group": "Advanced Features",
+            "pages": [
+              "functions",
+              "cron-jobs",
+              "custom-email"
             ]
           }
         ]
@@ -55,12 +64,6 @@
       "type": "button",
       "label": "Dashboard",
       "href": "https://corebase.trivyaa.in"
-    }
-  },
-  "footer": {
-    "socials": {
-      "github": "https://github.com/avijit969/corebase-documentation",
-      "twitter": "https://twitter.com/User"
     }
   }
 }

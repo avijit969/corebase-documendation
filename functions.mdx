@@ -1,0 +1,94 @@
+---
+title: "Functions"
+description: "Deploy your own serverless code, triggered by HTTP, a schedule, or a database event."
+---
+
+Edge Functions let you run your own code on CoreBase's infrastructure — triggered over
+HTTP, on a cron schedule, or whenever a row is inserted/updated/deleted (or a user signs up).
+
+<Warning>
+  Creating, editing, listing, and testing functions works on every plan. **Deploying** a
+  function requires the Workers for Platforms add-on enabled on your CoreBase instance's
+  Cloudflare account. Until it's enabled, `deploy()` returns an error and the function
+  stays in `draft` status — ask your CoreBase operator whether deployment is turned on.
+</Warning>
+
+## Create a Function
+
+```typescript
+const { data, error } = await corebase.functions.create({
+  name: 'hello',
+  trigger_type: 'http',
+  code: `export default { fetch: () => new Response('Hello!') }`,
+});
+```
+
+<Tabs>
+  <Tab title="HTTP">
+    ```typescript
+    { trigger_type: 'http' }
+    ```
+    Invoked directly by URL — see [Invoke](#invoke) below.
+  </Tab>
+  <Tab title="Cron">
+    ```typescript
+    { trigger_type: 'cron', cron_expression: '0 * * * *' }
+    ```
+    Runs on a schedule, once deployed.
+  </Tab>
+  <Tab title="Event">
+    ```typescript
+    { trigger_type: 'event', event_table: 'posts', event_op: 'insert' }
+    ```
+    Runs whenever a matching row is inserted, updated, or deleted — `event_op` can also
+    be `auth.signup` to react to new end users.
+  </Tab>
+</Tabs>
+
+## List, Get, Update, Delete
+
+```typescript
+const { data: functions } = await corebase.functions.list(); // omits `code`
+const { data } = await corebase.functions.get(fn.id);        // includes `code`
+
+await corebase.functions.update(fn.id, { code: 'export default { fetch: () => new Response("v2") }' });
+await corebase.functions.delete(fn.id);
+```
+
+<Note>
+  `name` and `trigger_type` can't be changed after creation. Editing `code` resets the
+  function's status back to `draft` until it's redeployed.
+</Note>
+
+## Deploy
+
+```typescript
+const { data, error } = await corebase.functions.deploy(fn.id);
+// error?.code === 'FUNCTION_DEPLOY_UNAVAILABLE' if deployment isn't enabled — see the warning above
+```
+
+## Invoke
+
+Once deployed, call an HTTP function by name. Unlike every other method, `invoke()`
+returns a raw [`Response`](https://developer.mozilla.org/en-US/docs/Web/API/Response) —
+not `{ data, error }` — because the gateway forwards your function's response byte-for-byte.
+
+```typescript
+const res = await corebase.functions.invoke('hello');
+console.log(await res.text());
+
+// With a method, subpath, and body:
+const res2 = await corebase.functions.invoke('hello', {
+  method: 'POST',
+  path: '/greet',
+  body: JSON.stringify({ name: 'Ada' }),
+  headers: { 'Content-Type': 'application/json' },
+});
+```
+
+## Deployment & Invocation History
+
+```typescript
+const { data: deployments } = await corebase.functions.listDeployments(fn.id);
+const { data: invocations } = await corebase.functions.listInvocations(fn.id);
+```

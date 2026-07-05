@@ -5,6 +5,27 @@ description: "Upload and manage files."
 
 CoreBase makes file uploads easy. You can upload files directly from the browser to your storage buckets.
 
+## Buckets
+
+Files live inside buckets — create one before uploading to it.
+
+```typescript
+await corebase.storage.createBucket({
+  name: 'avatars',
+  public: true,
+  allowedMimeTypes: ['image/png', 'image/jpeg'],
+  fileSizeLimit: 5 * 1024 * 1024, // 5MB
+});
+
+const { data: buckets } = await corebase.storage.listBuckets();
+const { data } = await corebase.storage.getBucket('avatars'); // bucket + its files
+```
+
+<Note>
+  A bucket must be empty before you can delete it — use `emptyBucket()` first, or
+  `deleteBucket()` will fail.
+</Note>
+
 ## Upload a File
 
 <Steps>
@@ -16,11 +37,11 @@ CoreBase makes file uploads easy. You can upload files directly from the browser
     const file = fileInput.files?.[0];
     ```
   </Step>
-  <Step title="Upload the file">
-    Call the upload method with the selected file.
+  <Step title="Upload the file to a bucket">
+    Call the upload method with the selected file and the bucket name.
     ```typescript
     if (file) {
-      const { data, error } = await corebase.storage.upload(file);
+      const { data, error } = await corebase.storage.upload(file, 'avatars');
 
       if (error) {
         console.error('Upload failed:', error);
@@ -33,3 +54,19 @@ CoreBase makes file uploads easy. You can upload files directly from the browser
     ```
   </Step>
 </Steps>
+
+## List & Delete Files
+
+```typescript
+const { data: files } = await corebase.storage.listFiles({ bucket: 'avatars' });
+
+// Download the raw bytes (e.g. to re-upload elsewhere, or process server-side)
+const { data: blob } = await corebase.storage.downloadFile(files.files[0].id);
+
+await corebase.storage.deleteFile(files.files[0].id);
+```
+
+<Tip>
+  For displaying a file (e.g. in an `<img>` tag), use the `url` returned from `upload()`
+  or found on each file record — `downloadFile()` is for when you need the raw bytes in code.
+</Tip>
